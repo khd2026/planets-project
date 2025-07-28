@@ -33,14 +33,22 @@
   button:hover {
     background-color: #c45d08;
   }
-  input {
+  input, textarea {
     padding: 7px;
     margin: 5px 7px;
     border: 1px solid #070000;
     border-radius: 5px;
-    width: 120px;
     font-size: 16px;
     text-align: center;
+  }
+  input {
+    width: 120px;
+  }
+  textarea {
+    width: 95%;
+    height: 80px;
+    resize: vertical;
+    text-align: right;
   }
   .container {
     max-width: 1200px;
@@ -51,55 +59,82 @@
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, auto);
     gap: 18px;
+    margin-bottom: 30px;
   }
   .card {
-    position: relative;
+    background-color: #ecedf1;
+    color: rgb(0, 0, 0);
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     text-align: center;
-    color: #fff;
-    overflow: hidden;
-  }
-  .card .overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0,0,0,0.4);
-    border-radius: 10px;
-    z-index: 0;
-  }
-  .card-content {
     position: relative;
-    z-index: 1;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-shadow: 1px 1px 4px black;
   }
   .card img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid rgb(10, 10, 10);
     margin-bottom: 10px;
+    background-color: rgba(255,255,255,0.8);
   }
   .card h3 {
     margin: 8px 0;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
   }
   .subtitle {
     font-size: 14px;
     margin: 6px 0;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
   }
   .highlight {
     font-weight: bold;
+    color: #fffbf0;
   }
-  /* حاويات المعلومتين الفلكية */
   .astro-info {
     background-color: rgba(0,0,0,0.5);
-    color: #fff;
+    color: #f8f7f6;
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
     font-size: 18px;
     line-height: 1.4;
   }
+
+  /* قسم التعليقات */
+  #comments-section {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    color: #000;
+  }
+  #comments-section h3 {
+    margin-bottom: 10px;
+  }
+  #comments-list p {
+    background: #d1c4e9;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    text-align: right;
+    font-size: 16px;
+    color: #3e2f5b;
+  }
+  #comment-input {
+    direction: rtl;
+    font-size: 16px;
+  }
+
   @media print {
-    button, input {
+    button, input, textarea {
+      display: none;
+    }
+    #comments-section {
       display: none;
     }
     body {
@@ -111,18 +146,16 @@
       border: 1px solid #645ec0;
       color: black;
       background: rgb(167, 113, 113);
+      background-image: none !important;
+      text-shadow: none;
     }
     .astro-info {
       color: black;
       background: #c48989;
+      text-shadow: none;
     }
   }
 </style>
-<!-- إضافة رابط Font Awesome -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-/>
 </head>
 <body>
 <div class="container">
@@ -140,28 +173,16 @@
     <button id="calculateBtn">احسب</button>
   </div>
   <div class="cards-grid" id="cardsGrid"></div>
-</div>
 
-<div id="socialMedia" style="text-align:center; margin-top:40px; font-size:16px; background:#f0f0f0; padding:10px;">
-  <span>تابعنا على: </span>
-  <a href="https://x.com/kacst" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
-    <i class="fab fa-x-twitter"></i> أكس
-  </a> |
-  <a href="https://www.youtube.com/user/KacstTV?themeRefresh=1" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
-    <i class="fab fa-youtube"></i> يوتيوب
-  </a> |
-  <a href="https://www.snapchat.com/@kacst_ar?src=QR_CODE" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
-    <i class="fab fa-snapchat"></i> سناب
-  </a> |
-  <a href="https://www.tiktok.com/@kacst.sa" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
-    <i class="fab fa-tiktok"></i> تيك توك
-  </a>
+  <!-- قسم التعليقات -->
+  <div id="comments-section" style="display:none;">
+    <h3>التعليقات</h3>
+    <div id="comments-list"></div>
+    <textarea id="comment-input" placeholder="اكتب تعليقك هنا..."></textarea><br />
+    <button id="addCommentBtn">إرسال</button>
+  </div>
+  
 </div>
-
-<footer style="text-align:center; padding:10px; background:#ccc; font-size:14px; margin-top:10px;">
-  <div>خالد المطيري</div>
-  <div><a href="mailto:KALMUTERI@KACST.GOV.SA">KALMUTERI@KACST.GOV.SA</a></div>
-</footer>
 
 <script>
   const planets = [
@@ -231,153 +252,198 @@
 
   const allBodies = [...planets, sun, moon];
 
-  // 30 معلومة فلكية قصيرة بالعربية والإنجليزية
   const astroFacts = {
     ar: [
       "الشمس تشكل أكثر من 99.8% من كتلة النظام الشمسي.",
-      "أكبر كوكب هو المشتري.",
-      "أسرع كوكب في الدوران هو المشتري.",
-      "الكوكب الأحمر هو المريخ.",
-      "القمر يبعد حوالي 384,400 كم عن الأرض.",
-      "زحل يمتلك حلقات ضخمة واضحة.",
-      "الأرض هي الكوكب الوحيد الذي يعرف وجود حياة عليه.",
-      "عطارد أقرب كوكب للشمس.",
-      "الزهرة هو أكثر كوكب حرارة بسبب غلافه الجوي الكثيف.",
-      "نبتون أبعد كوكب في النظام الشمسي."
+      "عطارد هو أقرب كوكب إلى الشمس.",
+      "المريخ يعرف بالكوكب الأحمر بسبب أكاسيد الحديد على سطحه.",
+      "زحل يتميز بحلقاته الجميلة التي تحيط به.",
+      "أورانوس يدور على جانبه مقارنة بباقي الكواكب.",
+      "القمر هو الجسم الطبيعي الوحيد الذي زاره الإنسان.",
+      "نبتون هو أبعد كوكب في النظام الشمسي.",
+      "الزهرة يشتهر بسطحه الحار والغلاف الجوي السميك.",
+      "المشتري هو أكبر كواكب المجموعة الشمسية.",
+      "الأرض هي الكوكب الوحيد الذي يدعم الحياة.",
+      "الشمس هي نجم متوسطة الحجم تبعد عنا حوالي 150 مليون كيلومتر.",
+      "يدور القمر حول الأرض في حوالي 27.3 يومًا."
     ],
     en: [
-      "The Sun accounts for more than 99.8% of the Solar System’s mass.",
-      "The largest planet is Jupiter.",
-      "The fastest rotating planet is Jupiter.",
-      "Mars is known as the Red Planet.",
-      "The Moon is about 384,400 km from Earth.",
-      "Saturn has large and visible rings.",
-      "Earth is the only planet known to support life.",
+      "The Sun makes up more than 99.8% of the Solar System's mass.",
       "Mercury is the closest planet to the Sun.",
-      "Venus is the hottest planet due to its thick atmosphere.",
-      "Neptune is the farthest planet in the Solar System."
+      "Mars is known as the Red Planet due to iron oxides on its surface.",
+      "Saturn is famous for its beautiful rings.",
+      "Uranus rotates on its side compared to other planets.",
+      "The Moon is the only natural body visited by humans.",
+      "Neptune is the farthest planet in the Solar System.",
+      "Venus has a hot surface and thick atmosphere.",
+      "Jupiter is the largest planet in the Solar System.",
+      "Earth is the only planet that supports life.",
+      "The Sun is a medium-sized star about 150 million kilometers away.",
+      "The Moon orbits Earth in about 27.3 days."
     ]
   };
 
-  // نختار 2 حقائق فلكية عشوائية عند كل حساب
-  function getRandomFacts(lang, count = 2) {
-    const facts = astroFacts[lang];
-    const shuffled = facts.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  }
-
   let currentLang = "ar";
 
-  function createCard(body, age, weight) {
-    const card = document.createElement("div");
-    card.className = "card";
+  // إظهار النتائج
+  function showResults(name, age, weight) {
+    const cardsGrid = document.getElementById("cardsGrid");
+    cardsGrid.innerHTML = "";
 
-    card.style.backgroundImage = `url(${body.image})`;
-    card.style.backgroundSize = "cover";
-    card.style.backgroundPosition = "center";
-    card.style.backgroundRepeat = "no-repeat";
+    // نختار 10 كواكب/أجرام (8 كواكب + الشمس + القمر)
+    // و 2 حاويات للحقائق الفلكية (اخترت أول 2 حقيقة من astroFacts)
+    const bodiesToShow = allBodies; // 10 أجسام
+    const factsToShow = astroFacts[currentLang].slice(0, 2);
 
-    // إضافة طبقة تغطية شفافة لتوضيح النص
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-    card.appendChild(overlay);
+    // إنشاء كروت الكواكب والأجرام السماوية
+    bodiesToShow.forEach(body => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.style.backgroundImage = `url(${body.image})`;
 
-    const content = document.createElement("div");
-    content.className = "card-content";
+      const nameText = currentLang === "ar" ? body.arName : body.enName;
+      card.innerHTML = `
+        <img src="${body.image}" alt="${nameText}" />
+        <h3>${nameText}</h3>
+        <p class="subtitle">
+          ${currentLang === "ar" ? "وزنك على هذا الجسم" : "Your weight on this body"}:
+          <span class="highlight">${(weight * body.gravity).toFixed(1)} ${currentLang === "ar" ? "كجم" : "kg"}</span>
+        </p>
+        <p class="subtitle">
+          ${currentLang === "ar" ? "عمرك على هذا الجسم" : "Your age on this body"}:
+          <span class="highlight">${(age / body.gravity).toFixed(1)} ${currentLang === "ar" ? "سنة" : "years"}</span>
+        </p>
+      `;
 
-    const img = document.createElement("img");
-    img.src = body.image;
-    img.alt = body[`${currentLang}Name`];
-    content.appendChild(img);
+      cardsGrid.appendChild(card);
+    });
 
-    const title = document.createElement("h3");
-    title.textContent = body[`${currentLang}Name`];
-    content.appendChild(title);
+    // إنشاء قسم الحقائق الفلكية
+    factsToShow.forEach(fact => {
+      const factDiv = document.createElement("div");
+      factDiv.classList.add("astro-info");
+      factDiv.textContent = fact;
+      cardsGrid.appendChild(factDiv);
+    });
 
-    if (age !== null && weight !== null) {
-      const ageOnBody = (age / body.gravity).toFixed(2);
-      const weightOnBody = (weight * body.gravity).toFixed(2);
+    // إظهار قسم التعليقات بعد الحساب
+    document.getElementById("comments-section").style.display = "block";
 
-      const ageLine = document.createElement("div");
-      ageLine.className = "subtitle";
-      ageLine.innerHTML = `عمرك على ${body[`${currentLang}Name`]}: <span class="highlight">${ageOnBody}</span> سنة`;
-      content.appendChild(ageLine);
+    loadComments();
+  }
 
-      const weightLine = document.createElement("div");
-      weightLine.className = "subtitle";
-      weightLine.innerHTML = `وزنك على ${body[`${currentLang}Name`]}: <span class="highlight">${weightOnBody}</span> كجم`;
-      content.appendChild(weightLine);
+  // تحميل وعرض التعليقات من localStorage
+  function loadComments() {
+    const commentsList = document.getElementById("comments-list");
+    commentsList.innerHTML = ""; // نظف التعليقات القديمة
+
+    const savedComments = JSON.parse(localStorage.getItem("userComments")) || [];
+    savedComments.forEach(comment => {
+      displayComment(comment.name, comment.text);
+    });
+  }
+
+  // عرض تعليق في الصفحة
+  function displayComment(name, text) {
+    const commentsList = document.getElementById("comments-list");
+    const p = document.createElement("p");
+    // تأكد عرض الاسم بشكل آمن لتجنب إدخال HTML خبيث (هنا بسيط)
+    const safeName = escapeHtml(name);
+    const safeText = escapeHtml(text);
+    p.innerHTML = `<strong>${safeName}:</strong> ${safeText}`;
+    commentsList.appendChild(p);
+  }
+
+  // دالة مساعدة للهروب من علامات HTML
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // إضافة تعليق جديد مع الاسم
+  function addComment() {
+    const commentInput = document.getElementById("comment-input");
+    const commentText = commentInput.value.trim();
+    const userName = document.getElementById("nameInput").value.trim();
+
+    if (!userName) {
+      alert(currentLang === "ar" ? "يرجى إدخال الاسم قبل كتابة التعليق" : "Please enter your name before commenting");
+      return;
+    }
+    if (!commentText) {
+      alert(currentLang === "ar" ? "يرجى كتابة تعليق قبل الإرسال" : "Please write a comment before sending");
+      return;
     }
 
-    card.appendChild(content);
-    return card;
+    // جلب التعليقات الحالية من localStorage
+    let savedComments = JSON.parse(localStorage.getItem("userComments")) || [];
+
+    // حفظ تعليق جديد مع الاسم والتاريخ (اختياري)
+    savedComments.push({
+      name: userName,
+      text: commentText,
+      date: new Date().toISOString()
+    });
+
+    localStorage.setItem("userComments", JSON.stringify(savedComments));
+
+    // عرض التعليق الجديد في الصفحة
+    displayComment(userName, commentText);
+
+    commentInput.value = "";
   }
 
-  function createAstroFactCard(factText) {
-    const card = document.createElement("div");
-    card.className = "card astro-info";
-    card.textContent = factText;
-    return card;
-  }
-
-  function displayResults() {
+  // تهيئة الأحداث
+  document.getElementById("calculateBtn").addEventListener("click", () => {
     const name = document.getElementById("nameInput").value.trim();
     const age = parseFloat(document.getElementById("ageInput").value);
     const weight = parseFloat(document.getElementById("weightInput").value);
 
-    if (!name || isNaN(age) || age <= 0 || isNaN(weight) || weight <= 0) {
-      alert(currentLang === "ar" ? "الرجاء إدخال بيانات صحيحة!" : "Please enter valid inputs!");
+    if (!name) {
+      alert(currentLang === "ar" ? "يرجى إدخال الاسم" : "Please enter your name");
+      return;
+    }
+    if (isNaN(age) || age <= 0) {
+      alert(currentLang === "ar" ? "يرجى إدخال عمر صحيح أكبر من صفر" : "Please enter a valid age greater than zero");
+      return;
+    }
+    if (isNaN(weight) || weight <= 0) {
+      alert(currentLang === "ar" ? "يرجى إدخال وزن صحيح أكبر من صفر" : "Please enter a valid weight greater than zero");
       return;
     }
 
-    const container = document.getElementById("cardsGrid");
-    container.innerHTML = "";
+    showResults(name, age, weight);
+  });
 
-    // نعرض 10 كواكب + الشمس والقمر (12 عنصر)
-    // مع إضافة 2 حقائق فلكية (مجموع 14 حاوية)
-    const bodies = allBodies;
+  document.getElementById("addCommentBtn").addEventListener("click", addComment);
 
-    bodies.forEach(body => {
-      container.appendChild(createCard(body, age, weight));
-    });
-
-    // جلب 2 حقيقة فلكية عشوائية
-    const facts = getRandomFacts(currentLang, 2);
-    facts.forEach(fact => {
-      container.appendChild(createAstroFactCard(fact));
-    });
-  }
-
-  document.getElementById("calculateBtn").addEventListener("click", displayResults);
-
+  // أزرار اللغة
   document.getElementById("arabicBtn").addEventListener("click", () => {
     currentLang = "ar";
-    document.getElementById("title").textContent = "وزنك وعمرك على كواكب المجموعة الشمسية";
-    document.getElementById("calculateBtn").textContent = "احسب";
-    document.getElementById("nameInput").placeholder = "الاسم";
-    document.getElementById("ageInput").placeholder = "العمر (سنة)";
-    document.getElementById("weightInput").placeholder = "الوزن (كجم)";
+    resetForm();
   });
-
   document.getElementById("englishBtn").addEventListener("click", () => {
     currentLang = "en";
-    document.getElementById("title").textContent = "Your Weight and Age on Solar System Planets";
-    document.getElementById("calculateBtn").textContent = "Calculate";
-    document.getElementById("nameInput").placeholder = "Name";
-    document.getElementById("ageInput").placeholder = "Age (years)";
-    document.getElementById("weightInput").placeholder = "Weight (kg)";
+    resetForm();
   });
 
-  document.getElementById("resetBtn").addEventListener("click", () => {
+  // زر إعادة التجربة (مسح المدخلات والنتائج)
+  document.getElementById("resetBtn").addEventListener("click", resetForm);
+
+  // زر الطباعة
+  document.getElementById("printBtn").addEventListener("click", () => {
+    window.print();
+  });
+
+  function resetForm() {
     document.getElementById("nameInput").value = "";
     document.getElementById("ageInput").value = "";
     document.getElementById("weightInput").value = "";
     document.getElementById("cardsGrid").innerHTML = "";
-  });
-
-  document.getElementById("printBtn").addEventListener("click", () => {
-    window.print();
-  });
+    document.getElementById("comments-list").innerHTML = "";
+    document.getElementById("comments-section").style.display = "none";
+  }
 </script>
 </body>
 </html>
