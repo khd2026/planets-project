@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>كواكب المجموعة الشمسية</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #9e4bc5;
+    color: #006560;
+    direction: rtl;
+    margin: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #f8f7f6;
+  }
+  .btn-group {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  button {
+    background-color: #a2a1ec;
+    color: rgb(14, 13, 13);
+    border: none;
+    padding: 10px 10px;
+    margin: 0 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  button:hover {
+    background-color: #c45d08;
+  }
+  input {
+    padding: 7px;
+    margin: 5px 7px;
+    border: 1px solid #070000;
+    border-radius: 5px;
+    width: 120px;
+    font-size: 16px;
+    text-align: center;
+  }
+  .container {
+    max-width: 1200px;
+    margin: auto;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, auto);
+    gap: 18px;
+  }
+  .card {
+    position: relative;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+  }
+  .card .overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    z-index: 0;
+  }
+  .card-content {
+    position: relative;
+    z-index: 1;
+  }
+  .card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-bottom: 10px;
+  }
+  .card h3 {
+    margin: 8px 0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  }
+  .subtitle {
+    font-size: 14px;
+    margin: 6px 0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  }
+  .highlight {
+    font-weight: bold;
+  }
+  /* حاويات المعلومتين الفلكية */
+  .astro-info {
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  @media print {
+    button, input {
+      display: none;
+    }
+    body {
+      background: rgb(216, 174, 135);
+      color: black;
+    }
+    .card {
+      box-shadow: none;
+      border: 1px solid #645ec0;
+      color: black;
+      background: rgb(167, 113, 113);
+    }
+    .astro-info {
+      color: black;
+      background: #c48989;
+    }
+  }
+</style>
+<!-- إضافة رابط Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+</head>
+<body>
+<div class="container">
+  <h1 id="title"> وزنك وعمرك على كواكب المجموعة الشمسية</h1>
+  <div class="btn-group">
+    <button id="arabicBtn">العربية</button>
+    <button id="englishBtn">English</button>
+    <button id="resetBtn">إعادة التجربة</button>
+    <button id="printBtn">طباعة النتائج</button>
+  </div>
+  <div style="text-align:center; margin-bottom: 20px;">
+    <input type="text" id="nameInput" placeholder="الاسم" />
+    <input type="number" id="ageInput" placeholder="العمر (سنة)" min="0" />
+    <input type="number" id="weightInput" placeholder="الوزن (كجم)" min="0" />
+    <button id="calculateBtn">احسب</button>
+  </div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</div>
+
+<div id="socialMedia" style="text-align:center; margin-top:40px; font-size:16px; background:#f0f0f0; padding:10px;">
+  <span>تابعنا على: </span>
+  <a href="https://x.com/kacst" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
+    <i class="fab fa-x-twitter"></i> أكس
+  </a> |
+  <a href="https://www.youtube.com/user/KacstTV?themeRefresh=1" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
+    <i class="fab fa-youtube"></i> يوتيوب
+  </a> |
+  <a href="https://www.snapchat.com/@kacst_ar?src=QR_CODE" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
+    <i class="fab fa-snapchat"></i> سناب
+  </a> |
+  <a href="https://www.tiktok.com/@kacst.sa" target="_blank" rel="noopener" style="color:#0077cc; margin: 0 5px;">
+    <i class="fab fa-tiktok"></i> تيك توك
+  </a>
+</div>
+
+<footer style="text-align:center; padding:10px; background:#ccc; font-size:14px; margin-top:10px;">
+  <div>خالد المطيري</div>
+  <div><a href="mailto:KALMUTERI@KACST.GOV.SA">KALMUTERI@KACST.GOV.SA</a></div>
+</footer>
+
+<script>
+  const planets = [
+    {
+      arName: "عطارد",
+      enName: "Mercury",
+      gravity: 0.38,
+      image: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"
+    },
+    {
+      arName: "الزهرة",
+      enName: "Venus",
+      gravity: 0.91,
+      image: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"
+    },
+    {
+      arName: "الأرض",
+      enName: "Earth",
+      gravity: 1,
+      image: "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"
+    },
+    {
+      arName: "المريخ",
+      enName: "Mars",
+      gravity: 0.38,
+      image: "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"
+    },
+    {
+      arName: "المشتري",
+      enName: "Jupiter",
+      gravity: 2.34,
+      image: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"
+    },
+    {
+      arName: "زحل",
+      enName: "Saturn",
+      gravity: 1.06,
+      image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"
+    },
+    {
+      arName: "أورانوس",
+      enName: "Uranus",
+      gravity: 0.92,
+      image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"
+    },
+    {
+      arName: "نبتون",
+      enName: "Neptune",
+      gravity: 1.19,
+      image: "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"
+    }
+  ];
+
+  const sun = {
+    arName: "الشمس",
+    enName: "Sun",
+    gravity: 27.9,
+    image: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg"
+  };
+
+  const moon = {
+    arName: "القمر",
+    enName: "Moon",
+    gravity: 0.1655,
+    image: "https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg"
+  };
+
+  const allBodies = [...planets, sun, moon];
+
+  // 30 معلومة فلكية قصيرة بالعربية والإنجليزية
+  const astroFacts = {
+    ar: [
+      "الشمس تشكل أكثر من 99.8% من كتلة النظام الشمسي.",
+      "أكبر كوكب هو المشتري.",
+      "أسرع كوكب في الدوران هو المشتري.",
+      "الكوكب الأحمر هو المريخ.",
+      "القمر يبعد حوالي 384,400 كم عن الأرض.",
+      "زحل يمتلك حلقات ضخمة واضحة.",
+      "الأرض هي الكوكب الوحيد الذي يعرف وجود حياة عليه.",
+      "عطارد أقرب كوكب للشمس.",
+      "الزهرة هو أكثر كوكب حرارة بسبب غلافه الجوي الكثيف.",
+      "نبتون أبعد كوكب في النظام الشمسي."
+    ],
+    en: [
+      "The Sun accounts for more than 99.8% of the Solar System’s mass.",
+      "The largest planet is Jupiter.",
+      "The fastest rotating planet is Jupiter.",
+      "Mars is known as the Red Planet.",
+      "The Moon is about 384,400 km from Earth.",
+      "Saturn has large and visible rings.",
+      "Earth is the only planet known to support life.",
+      "Mercury is the closest planet to the Sun.",
+      "Venus is the hottest planet due to its thick atmosphere.",
+      "Neptune is the farthest planet in the Solar System."
+    ]
+  };
+
+  // نختار 2 حقائق فلكية عشوائية عند كل حساب
+  function getRandomFacts(lang, count = 2) {
+    const facts = astroFacts[lang];
+    const shuffled = facts.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
+  let currentLang = "ar";
+
+  function createCard(body, age, weight) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.style.backgroundImage = `url(${body.image})`;
+    card.style.backgroundSize = "cover";
+    card.style.backgroundPosition = "center";
+    card.style.backgroundRepeat = "no-repeat";
+
+    // إضافة طبقة تغطية شفافة لتوضيح النص
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    card.appendChild(overlay);
+
+    const content = document.createElement("div");
+    content.className = "card-content";
+
+    const img = document.createElement("img");
+    img.src = body.image;
+    img.alt = body[`${currentLang}Name`];
+    content.appendChild(img);
+
+    const title = document.createElement("h3");
+    title.textContent = body[`${currentLang}Name`];
+    content.appendChild(title);
+
+    if (age !== null && weight !== null) {
+      const ageOnBody = (age / body.gravity).toFixed(2);
+      const weightOnBody = (weight * body.gravity).toFixed(2);
+
+      const ageLine = document.createElement("div");
+      ageLine.className = "subtitle";
+      ageLine.innerHTML = `عمرك على ${body[`${currentLang}Name`]}: <span class="highlight">${ageOnBody}</span> سنة`;
+      content.appendChild(ageLine);
+
+      const weightLine = document.createElement("div");
+      weightLine.className = "subtitle";
+      weightLine.innerHTML = `وزنك على ${body[`${currentLang}Name`]}: <span class="highlight">${weightOnBody}</span> كجم`;
+      content.appendChild(weightLine);
+    }
+
+    card.appendChild(content);
+    return card;
+  }
+
+  function createAstroFactCard(factText) {
+    const card = document.createElement("div");
+    card.className = "card astro-info";
+    card.textContent = factText;
+    return card;
+  }
+
+  function displayResults() {
+    const name = document.getElementById("nameInput").value.trim();
+    const age = parseFloat(document.getElementById("ageInput").value);
+    const weight = parseFloat(document.getElementById("weightInput").value);
+
+    if (!name || isNaN(age) || age <= 0 || isNaN(weight) || weight <= 0) {
+      alert(currentLang === "ar" ? "الرجاء إدخال بيانات صحيحة!" : "Please enter valid inputs!");
+      return;
+    }
+
+    const container = document.getElementById("cardsGrid");
+    container.innerHTML = "";
+
+    // نعرض 10 كواكب + الشمس والقمر (12 عنصر)
+    // مع إضافة 2 حقائق فلكية (مجموع 14 حاوية)
+    const bodies = allBodies;
+
+    bodies.forEach(body => {
+      container.appendChild(createCard(body, age, weight));
+    });
+
+    // جلب 2 حقيقة فلكية عشوائية
+    const facts = getRandomFacts(currentLang, 2);
+    facts.forEach(fact => {
+      container.appendChild(createAstroFactCard(fact));
+    });
+  }
+
+  document.getElementById("calculateBtn").addEventListener("click", displayResults);
+
+  document.getElementById("arabicBtn").addEventListener("click", () => {
+    currentLang = "ar";
+    document.getElementById("title").textContent = "وزنك وعمرك على كواكب المجموعة الشمسية";
+    document.getElementById("calculateBtn").textContent = "احسب";
+    document.getElementById("nameInput").placeholder = "الاسم";
+    document.getElementById("ageInput").placeholder = "العمر (سنة)";
+    document.getElementById("weightInput").placeholder = "الوزن (كجم)";
+  });
+
+  document.getElementById("englishBtn").addEventListener("click", () => {
+    currentLang = "en";
+    document.getElementById("title").textContent = "Your Weight and Age on Solar System Planets";
+    document.getElementById("calculateBtn").textContent = "Calculate";
+    document.getElementById("nameInput").placeholder = "Name";
+    document.getElementById("ageInput").placeholder = "Age (years)";
+    document.getElementById("weightInput").placeholder = "Weight (kg)";
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("nameInput").value = "";
+    document.getElementById("ageInput").value = "";
+    document.getElementById("weightInput").value = "";
+    document.getElementById("cardsGrid").innerHTML = "";
+  });
+
+  document.getElementById("printBtn").addEventListener("click", () => {
+    window.print();
+  });
+</script>
+</body>
+</html>
